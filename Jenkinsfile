@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh 'export PATH=/opt/homebrew/bin:$PATH && npm install'
             }
         }
 
@@ -17,7 +17,7 @@ pipeline {
                 script {
                     def testStatus = true
                     try {
-                        sh 'npm test'
+                        sh 'export PATH=/opt/homebrew/bin:$PATH && npm test'
                     } catch (err) {
                         testStatus = false
                         currentBuild.result = 'FAILURE'
@@ -27,6 +27,7 @@ pipeline {
                             subject: "Jenkins Test Stage - ${testStatus ? 'SUCCESS' : 'FAILURE'}",
                             body: """<p>The 'Run Tests' stage has ${testStatus ? 'succeeded' : 'failed'}.</p>
                                      <p>Check Jenkins logs for details.</p>""",
+                            mimeType: 'text/html',
                             attachLog: true
                         )
                     }
@@ -36,7 +37,7 @@ pipeline {
 
         stage('Generate Coverage Report') {
             steps {
-                sh 'npm run coverage || true'
+                sh 'export PATH=/opt/homebrew/bin:$PATH && npm run coverage || true'
             }
         }
 
@@ -45,7 +46,7 @@ pipeline {
                 script {
                     def auditStatus = true
                     try {
-                        sh 'npm audit'
+                        sh 'export PATH=/opt/homebrew/bin:$PATH && npm audit'
                     } catch (err) {
                         auditStatus = false
                         currentBuild.result = 'FAILURE'
@@ -55,6 +56,7 @@ pipeline {
                             subject: "Jenkins Security Scan Stage - ${auditStatus ? 'SUCCESS' : 'FAILURE'}",
                             body: """<p>The 'Security Scan' stage has ${auditStatus ? 'succeeded' : 'failed'}.</p>
                                      <p>Check Jenkins logs for details.</p>""",
+                            mimeType: 'text/html',
                             attachLog: true
                         )
                     }
@@ -65,7 +67,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-                    sh 'sonar-scanner -Dsonar.login=$SONAR_TOKEN'
+                    sh 'export PATH=/opt/homebrew/bin:$PATH && sonar-scanner -Dsonar.login=$SONAR_TOKEN'
                 }
             }
         }
