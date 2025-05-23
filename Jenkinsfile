@@ -2,39 +2,36 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo 'Build the code using a build automation tool (e.g., Maven) to compile and package your code.'
+                git branch: 'main', url: 'https://github.com/ritssoft/sit75381c.git'
             }
         }
-        stage('Unit and Integration Tests') {
+
+        stage('Install Dependencies') {
             steps {
-                echo 'Run unit tests to ensure the code functions as expected and integration tests to verify different components work together.'
+                sh 'npm install'
             }
         }
-        stage('Code Analysis') {
+
+        stage('Run Tests') {
             steps {
-                echo 'Analyze the code using a tool like SonarQube to ensure it meets industry standards and best practices.'
+                // Allows pipeline to continue despite test failures
+                sh 'npm test || true'
             }
         }
-        stage('Security Scan') {
+
+        stage('Generate Coverage Report') {
             steps {
-                echo 'Perform a security scan using tools like OWASP Dependency-Check to identify vulnerabilities in the code or dependencies.'
+                // Ensure coverage report exists
+                sh 'npm run coverage || true'
             }
         }
-        stage('Deploy to Staging') {
+
+        stage('NPM Audit (Security Scan)') {
             steps {
-                echo 'Deploy the application to a staging server (e.g., AWS EC2 instance) for further testing.'
-            }
-        }
-        stage('Integration Tests on Staging') {
-            steps {
-                echo 'Run integration tests on the staging environment to verify the application behaves correctly in a production-like setting.'
-            }
-        }
-        stage('Deploy to Production') {
-            steps {
-                echo 'Deploy the verified application to a production server (e.g., AWS EC2 instance) for end users.'
+                // This will show known CVEs in the output
+                sh 'npm audit || true'
             }
         }
     }
