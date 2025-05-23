@@ -10,7 +10,7 @@ pipeline {
         stage('1. Checkout Code') {
             steps {
                 // 📝 Fetch latest code from GitHub
-                git url: 'https://github.com/your-username/your-repo.git', branch: 'main'
+                git url: 'https://github.com/ritssoft/sit75381c.git', branch: 'main'
             }
         }
 
