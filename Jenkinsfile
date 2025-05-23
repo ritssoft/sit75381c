@@ -1,65 +1,40 @@
 pipeline {
     agent any
 
-    environment {
-        PROJECT_NAME = "MyApp"
-    }
-
     stages {
-
-        stage('1. Checkout Code') {
+        stage('Build') {
             steps {
-                // 📝 Fetch latest code from GitHub
-                git url: 'https://github.com/ritssoft/sit75381c.git', branch: 'main'
+                echo 'Build the code using a build automation tool (e.g., Maven) to compile and package your code.'
             }
         }
-
-        stage('2. Code Linting') {
+        stage('Unit and Integration Tests') {
             steps {
-                // 📝 Check for syntax/style issues using a linter
-                echo 'Running ESLint or Pylint to check code style...'
-                // Example: sh 'eslint . || true' or sh 'pylint src/'
+                echo 'Run unit tests to ensure the code functions as expected and integration tests to verify different components work together.'
             }
         }
-
-        stage('3. Build') {
+        stage('Code Analysis') {
             steps {
-                // 📝 Compile the application
-                echo 'Building the application...'
-                // Example for Java: sh 'mvn clean package'
-                // Example for Node.js: sh 'npm run build'
+                echo 'Analyze the code using a tool like SonarQube to ensure it meets industry standards and best practices.'
             }
         }
-
-        stage('4. Unit Test') {
+        stage('Security Scan') {
             steps {
-                // 📝 Run unit tests to validate code logic
-                echo 'Running unit tests...'
-                // Example: sh 'pytest tests/' or sh 'npm test'
+                echo 'Perform a security scan using tools like OWASP Dependency-Check to identify vulnerabilities in the code or dependencies.'
             }
         }
-
-        stage('5. Code Coverage') {
+        stage('Deploy to Staging') {
             steps {
-                // 📝 Measure how much of your code is tested
-                echo 'Generating code coverage report...'
-                // Example: sh 'coverage run -m pytest && coverage report'
+                echo 'Deploy the application to a staging server (e.g., AWS EC2 instance) for further testing.'
             }
         }
-
-        stage('6. Security Scan') {
+        stage('Integration Tests on Staging') {
             steps {
-                // 📝 Scan dependencies or code for vulnerabilities
-                echo 'Running security scan...'
-                // Example: sh 'npm audit' or sh 'trivy fs .'
+                echo 'Run integration tests on the staging environment to verify the application behaves correctly in a production-like setting.'
             }
         }
-
-        stage('7. Deploy to Dev Environment') {
+        stage('Deploy to Production') {
             steps {
-                // 📝 Deploy build artifacts to a dev/test environment
-                echo 'Deploying to development environment...'
-                // Example: sh './deploy.sh dev'
+                echo 'Deploy the verified application to a production server (e.g., AWS EC2 instance) for end users.'
             }
         }
     }
