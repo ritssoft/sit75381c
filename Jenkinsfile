@@ -10,7 +10,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'export PATH=$PATH:/opt/homebrew/bin && npm install'
+                sh 'npm install'
             }
         }
 
