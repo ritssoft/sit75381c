@@ -28,5 +28,12 @@ pipeline {
                 sh 'export PATH=/opt/homebrew/bin:$PATH && npm audit || true'
             }
         }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                    sh 'export PATH=/opt/homebrew/bin:$PATH && sonar-scanner -Dsonar.login=$SONAR_TOKEN'
+                }
+            }
     }
 }
