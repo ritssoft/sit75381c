@@ -35,5 +35,6 @@ pipeline {
                     sh 'export PATH=/opt/homebrew/bin:$PATH && sonar-scanner -Dsonar.login=$SONAR_TOKEN'
                 }
             }
+        }
     }
 }
