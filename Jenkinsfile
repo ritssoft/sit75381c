@@ -16,20 +16,28 @@ pipeline {
             steps {
                 script {
                     def testStatus = true
-                    try {
-                        sh 'export PATH=/opt/homebrew/bin:$PATH && npm test'
-                    } catch (err) {
-                        testStatus = false
-                        currentBuild.result = 'FAILURE'
-                    } finally {
-                        emailext(
-                            to: 'riteshagarwal.au@gmail.com',
-                            subject: "Jenkins Test Stage - ${testStatus ? 'SUCCESS' : 'FAILURE'}",
-                            body: """<p>The 'Run Tests' stage has ${testStatus ? 'succeeded' : 'failed'}.</p>
-                                     <p>Check Jenkins logs for details.</p>""",
-                            mimeType: 'text/html',
-                            attachLog: true
-                        )
+                    withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+                        try {
+                            // Pass the token to Snyk for auth and run test
+                            sh '''
+                                export PATH=/opt/homebrew/bin:$PATH
+                                export SNYK_TOKEN=$SNYK_TOKEN
+                                snyk auth $SNYK_TOKEN
+                                npm test
+                            '''
+                        } catch (err) {
+                            testStatus = false
+                            currentBuild.result = 'FAILURE'
+                        } finally {
+                            emailext(
+                                to: 'riteshagarwal.au@gmail.com',
+                                subject: "Jenkins Test Stage - ${testStatus ? 'SUCCESS' : 'FAILURE'}",
+                                body: """<p>The 'Run Tests' stage has ${testStatus ? 'succeeded' : 'failed'}.</p>
+                                        <p>Check Jenkins logs for details.</p>""",
+                                mimeType: 'text/html',
+                                attachLog: true
+                            )
+                        }
                     }
                 }
             }
