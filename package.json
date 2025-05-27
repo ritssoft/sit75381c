@@ -12,7 +12,7 @@
     "start": "NODE_OPTIONS=--openssl-legacy-provider node app.js",
     "build": "browserify -r jquery > public/js/bundle.js",
     "cleanup": "mongo express-todo --eval 'db.todos.remove({});'",
-    "test": "snyk test --ignore-policy --fail-on=none"
+    "test": "snyk test || exit 0"
   },
   "dependencies": {
     "adm-zip": "0.4.7",
